@@ -1,0 +1,29 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    const int DUR_HIJAU = 20;
+    const int DUR_KUNING = 3;
+    const int DUR_MERAH = 80;
+    const int TOTAL = DUR_HIJAU + DUR_KUNING + DUR_MERAH; // 103
+
+    // detik ke-45 mulai KUNING
+    const int OFFSET_YELLOW_START = 45 % TOTAL;
+
+    // detik yang ditanyakan di soal
+    vector<int> detik = {80, 35, 150, 212};
+
+    for (int t : detik) {
+        int pos = ( (t - OFFSET_YELLOW_START) % TOTAL + TOTAL ) % TOTAL;
+
+        if (pos < DUR_KUNING) {
+            cout << "detik " << t << ": KUNING\n";
+        } else if (pos < DUR_KUNING + DUR_MERAH) {
+            cout << "detik " << t << ": MERAH\n";
+        } else {
+            cout << "detik " << t << ": HIJAU\n";
+        }
+    }
+
+    return 0;
+}
