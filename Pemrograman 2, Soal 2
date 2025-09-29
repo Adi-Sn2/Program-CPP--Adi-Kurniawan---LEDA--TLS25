@@ -1,0 +1,77 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+bool isVowel(char c) {
+    char x = tolower(static_cast<unsigned char>(c));
+    return x=='a' || x=='e' || x=='i' || x=='o' || x=='u';
+}
+
+string myReverse(const string &s) {
+    string out;
+    out.resize(s.size());
+    for (size_t i = 0; i < s.size(); ++i) {
+        out[i] = s[s.size() - 1 - i];
+    }
+    return out;
+}
+
+string removeVowels(const string &s) {
+    string out;
+    for (char c : s) {
+        if (!isVowel(c)) out.push_back(c);
+    }
+    return out;
+}
+
+string insertAsciiInMiddle(const string &base, int asciiVal) {
+    string asciiStr = to_string(asciiVal);
+    size_t L = base.size();
+    size_t leftLen = (L + 1) / 2;
+    string left = base.substr(0, leftLen);
+    string right = base.substr(leftLen);
+    return left + asciiStr + right;
+}
+
+string encryptMachine(const string &plain) {
+    if (plain.empty()) return "";
+    string noVowel = removeVowels(plain);
+    string rev = myReverse(noVowel);
+    int asciiFirst = static_cast<int>(plain[0]);
+    string cipher = insertAsciiInMiddle(rev, asciiFirst);
+    return cipher;
+}
+
+pair<string, char> decryptMachine(const string &cipher) {
+    int n = (int)cipher.size();
+    int i = 0;
+    while (i < n && !isdigit(static_cast<unsigned char>(cipher[i]))) ++i;
+    if (i == n) return { "", '\0' };
+
+    int j = i;
+    while (j < n && isdigit(static_cast<unsigned char>(cipher[j]))) ++j;
+
+    string digits = cipher.substr(i, j - i);
+    int asciiVal = stoi(digits);
+    char firstChar = static_cast<char>(asciiVal);
+
+    string withoutDigits = cipher.substr(0, i) + cipher.substr(j);
+    string restoredConsonants = myReverse(withoutDigits);
+
+    return { restoredConsonants, firstChar };
+}
+
+int main() {
+    cout << "=== ENCRYPT EXAMPLES ===\n";
+    cout << "banana -> " << encryptMachine("banana") << "\n";
+    cout << "Jakarta -> " << encryptMachine("Jakarta") << "\n";
+    cout << "TANGERANG -> " << encryptMachine("TANGERANG") << "\n";
+
+    cout << "\n=== DECRYPT EXAMPLE (soal) ===\n";
+    string cipher = "nm71rG";
+    auto res = decryptMachine(cipher);
+    cout << cipher << " -> consonant-only = " << res.first
+         << " , first char = '" << res.second << "'\n";
+    cout << "Kemungkinan kata asli: German\n";
+
+    return 0;
+}
